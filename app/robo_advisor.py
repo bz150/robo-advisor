@@ -4,6 +4,8 @@ import requests
 import json
 import csv
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def to_usd(my_price):
     """
@@ -18,8 +20,9 @@ def to_usd(my_price):
 #
 # PROGRAM INPUTS
 #
-
-request_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo"
+API_KEY = os.environ.get("ALPHAVANTAGE_API_KEY")
+ticker = "MSFT"
+request_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
     # website > documentation > JSON first link
 
 response = requests.get(request_URL)
@@ -88,7 +91,7 @@ with open(csv_file_path, "w") as csv_file:
     writer = csv.DictWriter(csv_file, fieldnames=["timestamp","open","high","low","close","volume"])
     writer.writeheader()
 
-    # loop to write each row
+    # loop to write prices each date
     for day in dates:
         writer.writerow({
             "timestamp":day,
@@ -105,5 +108,3 @@ print("-------------------------")
 # conclusion
 print("HAPPY INVESTING!")
 print("-------------------------")
-
-

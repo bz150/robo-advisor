@@ -1,5 +1,13 @@
 # this is the "app/robo_advisor.py" file
 
+# TO DO:
+# 1. pandas graph
+# 2. validate input ticker (no nonsense)
+# 3. if error on alphavantage request, prompt user re-enter
+# 4. check proj reqs
+
+
+
 import requests
 import json
 import csv
@@ -12,8 +20,11 @@ import datetime
 now = datetime.datetime.now()
 
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
+#import matplotlib.dates as mdates
+from pandas import DataFrame
+from matplotlib import pyplot as plt
+import seaborn as sns
+import plotly.express as px
 
 
 def to_usd(my_price):
@@ -144,18 +155,28 @@ print("-------------------------")
 #
 # PLOTTING CHART
 # attribution: https://stackoverflow.com/questions/42372617/how-to-plot-csv-data-using-matplotlib-and-pandas-in-python
+# attribution: https://colab.research.google.com/drive/1mSRkZSI_a0ASFSxOUzzLqFI21KDmH10w?usp=sharing
 
 df = pd.read_csv(csv_file_path)
-headers = ['Date', 'Close']
-#print(df)
+#headers = ['Date', 'Close']
 
-#df['Date'] = df['Date'].map(lambda x: datetime.strftime(str(x), '%Y/%m/%d %H:%M:%S.%f'))
-x = df['Date']
-y = df['Close']
-
-# plot
-plt.plot(x,y)
-# beautify the x-labels
-plt.gcf().autofmt_xdate()
+sns.lineplot(data = df, x="timestamp", y="close")
 
 plt.show()
+
+#print(type(df))
+
+#line_df = DataFrame(df)
+#
+#x = df['Date']
+#y = df['Close']
+#sns.lineplot(data=line_df, x="date", y="close")
+
+
+# plot
+#df['Date'] = df['Date'].map(lambda x: datetime.strftime(str(x), '%Y/%m/%d %H:%M:%S.%f'))
+#plt.plot(x,y)
+# beautify the x-labels
+#plt.gcf().autofmt_xdate()
+#
+#plt.show()

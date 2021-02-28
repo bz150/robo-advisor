@@ -81,13 +81,28 @@ print("-------------------------")
 print("RECOMMENDATION: BUY!")
 print("RECOMMENDATION REASON: TODO")
 print("-------------------------")
+
+# write data to csv
+csv_file_path = os.path.join(os.path.dirname(__file__),"..","data","prices.csv") # relative filepath
+with open(csv_file_path, "w") as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames=["timestamp","open","high","low","close","volume"])
+    writer.writeheader()
+
+    # loop to write each row
+    writer.writerow({
+        "timestamp":"test",
+        "open":"test",
+        "high":"test",
+        "low":"test",
+        "close":"test",
+        "volume":"test"
+    })
+
+print("Writing data to .csv file", csv_file_path)
+print("-------------------------")
+
+# conclusion
 print("HAPPY INVESTING!")
 print("-------------------------")
 
 
-csv_file_path = os.path.join(os.path.dirname(__file__),"..","data","prices.csv") # relative filepath
-
-with open(csv_file_path, "w") as csv_file:
-    writer = csv.DictWriter(csv_file, fieldnames=["city","name"])
-    writer.writeheader()
-    writer.writerow({"city":"New York","name":"Yanks"})

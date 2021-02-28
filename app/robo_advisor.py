@@ -3,6 +3,16 @@
 import requests
 import json
 
+def to_usd(my_price):
+    """
+    Converts a numeric value to usd-formatted string, for printing and display purposes.
+    Param: my_price (int or float) like 4000.444444
+    Example: to_usd(4000.444444)
+    Returns: $4,000.44
+    """
+    return f"${my_price:,.2f}" #> $12,000.71
+
+
 #
 # PROGRAM INPUTS
 #
@@ -21,12 +31,13 @@ parsed_response = json.loads(response.text)
     # 2 keys: "Meta Data" and "Time Series (Daily)"
     # meta data is another dict
 #print(parsed_response["Meta Data"].keys()) #> ['1. Information', '2. Symbol', '3. Last Refreshed', '4. Output Size', '5. Time Zone']
+#print(parsed_response["Time Series (Daily)"].keys()) #> a bunch of dates; e.g. '2021-02-19'
 
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
-
+latest_close = parsed_response["Time Series (Daily)"]['2021-02-26']['4. close']
+print(latest_close)
 
 #breakpoint()
-
 
 #
 # OUTPUT REQUIREMENTS
@@ -35,10 +46,10 @@ print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm")
+print("REQUEST AT: 2018-02-20 02:00pm") # USE DATE TIME MODULE
 print("-------------------------")
 print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
-print("LATEST CLOSE: $100,000.00")
+print("LATEST CLOSE:", to_usd(float(latest_close)))
 print("RECENT HIGH: $101,000.00")
 print("RECENT LOW: $99,000.00")
 print("-------------------------")

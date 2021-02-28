@@ -17,8 +17,13 @@ response = requests.get(request_URL)
 #    # need to parse this from strings into dictionary
 
 parsed_response = json.loads(response.text)
-print(type(parsed_response)) #> dict
-    #2 keys: "Meta Data" and "Time Series (Daily)"
+#print(type(parsed_response)) #> dict
+    # 2 keys: "Meta Data" and "Time Series (Daily)"
+    # meta data is another dict
+#print(parsed_response["Meta Data"].keys()) #> ['1. Information', '2. Symbol', '3. Last Refreshed', '4. Output Size', '5. Time Zone']
+
+last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+
 
 #breakpoint()
 
@@ -32,7 +37,7 @@ print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
 print("REQUEST AT: 2018-02-20 02:00pm")
 print("-------------------------")
-print("LATEST DAY: 2018-02-20")
+print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
 print("LATEST CLOSE: $100,000.00")
 print("RECENT HIGH: $101,000.00")
 print("RECENT LOW: $99,000.00")

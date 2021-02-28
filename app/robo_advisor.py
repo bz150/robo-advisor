@@ -6,6 +6,8 @@ import csv
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import datetime
+now = datetime.datetime.now()
 
 def to_usd(my_price):
     """
@@ -20,16 +22,22 @@ def to_usd(my_price):
 #
 # PROGRAM INPUTS
 #
+
+# customize URL to pull data
 API_KEY = os.environ.get("ALPHAVANTAGE_API_KEY")
-ticker = "MSFT"
+ticker = input("Please enter a stock ticker: ")
+ticker = ticker.upper()
 request_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
     # website > documentation > JSON first link
 
 response = requests.get(request_URL)
 #print(type(response)) #> <class 'requests.models.Response'>
 #print(response.status_code) #status code of the request #> 200
-#print(response.text) #actual text of the request #> bunch string version of dictionaries
-#    # need to parse this from strings into dictionary
+#print(response) #actual text of the request #> bunch string version of dictionaries
+#print(type(response)) #actual text of the request #> bunch string version of dictionaries
+#if "invalid API call" in response.text:
+#    print("ERROR")
+
 
 parsed_response = json.loads(response.text)
 #print(type(parsed_response)) #> dict
@@ -59,6 +67,21 @@ for i in dates:
 recent_high = max(high_prices)
 recent_low = min(low_prices)
 
+# recommendation algorithm
+latest_close = float(latest_close)
+recent_high = float(latest_close)
+recent_low = float(latest_close)
+if latest_close > 1.2*(recent_low+recent_high)/2:
+    recommendation = "BUY!"
+    thesis = "Stock looks like it's trending up!"
+elif latest_close < 0.8*(recent_low+recent_high)/2:
+    recommendation = "SELL!"
+    thesis = "Stock looks like it's headed down!"
+else:
+    recommendation = "Wait/hold..."
+    thesis = "No conclusive evidence could be found to justify a buy or a sell."
+
+
 #breakpoint()
 
 #
@@ -67,10 +90,10 @@ recent_low = min(low_prices)
 
 # printing stock information
 print("-------------------------")
-print("SELECTED SYMBOL: XYZ")
+print("SELECTED SYMBOL:", ticker)
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm") # USE DATE TIME MODULE
+print("REQUEST AT:", now.strftime("%y-%m-%d %H:%M:%S"))
 print("-------------------------")
 
 # printing stock data
@@ -81,12 +104,12 @@ print("RECENT LOW:", to_usd(float(recent_low)))
 print("-------------------------")
 
 # design algorithm
-print("RECOMMENDATION: BUY!")
-print("RECOMMENDATION REASON: TODO")
+print("RECOMMENDATION:", recommendation)
+print("RECOMMENDATION REASON:", thesis)
 print("-------------------------")
 
 # write data to csv
-csv_file_path = os.path.join(os.path.dirname(__file__),"..","data","prices.csv") # relative filepath
+csv_file_path = os.path.join(os.path.dirname(__file__),"..","data",ticker+" prices.csv") # relative filepath
 with open(csv_file_path, "w") as csv_file:
     writer = csv.DictWriter(csv_file, fieldnames=["timestamp","open","high","low","close","volume"])
     writer.writeheader()

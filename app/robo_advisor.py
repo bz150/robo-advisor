@@ -33,9 +33,17 @@ parsed_response = json.loads(response.text)
 #print(parsed_response["Meta Data"].keys()) #> ['1. Information', '2. Symbol', '3. Last Refreshed', '4. Output Size', '5. Time Zone']
 #print(parsed_response["Time Series (Daily)"].keys()) #> a bunch of dates; e.g. '2021-02-19'
 
+# latest day
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
-latest_close = parsed_response["Time Series (Daily)"]['2021-02-26']['4. close']
-print(latest_close)
+
+# latest close, high, low
+tsd = parsed_response["Time Series (Daily)"] # time series daily, for convenience. keys are all the dates
+
+# convert the tsd keys (bunch of dates) into a list to have most recent date
+dates = list(tsd.keys()) # CAN SORT TO ENSURE LATEST DAY IS FIRST
+latest_day = dates[0]
+latest_close = tsd[latest_day]['4. close']
+
 
 #breakpoint()
 

@@ -36,7 +36,7 @@ parsed_response = json.loads(response.text)
 # latest day
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 
-# latest close, high, low
+# latest close
 tsd = parsed_response["Time Series (Daily)"] # time series daily, for convenience. keys are all the dates
 
 # convert the tsd keys (bunch of dates) into a list to have most recent date
@@ -44,6 +44,12 @@ dates = list(tsd.keys()) # CAN SORT TO ENSURE LATEST DAY IS FIRST
 latest_day = dates[0]
 latest_close = tsd[latest_day]['4. close']
 
+# max recent high
+# max of the high prices provided
+high_prices = []
+for i in dates:
+    high_prices.append((float(tsd[i]["2. high"])))
+recent_high = max(high_prices)
 
 #breakpoint()
 
@@ -58,7 +64,7 @@ print("REQUEST AT: 2018-02-20 02:00pm") # USE DATE TIME MODULE
 print("-------------------------")
 print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
 print("LATEST CLOSE:", to_usd(float(latest_close)))
-print("RECENT HIGH: $101,000.00")
+print("RECENT HIGH:", to_usd(float(recent_high)))
 print("RECENT LOW: $99,000.00")
 print("-------------------------")
 print("RECOMMENDATION: BUY!")

@@ -162,7 +162,28 @@ df = pd.read_csv(csv_file_path)
 
 sns.lineplot(data = df, x="timestamp", y="close")
 
+#plt.legend()
+#plt.grid()
+
+plt.title(ticker+" Price", fontsize=18, y=1.05)
+plt.xlabel("Date", fontsize=12)
+plt.ylabel("Close Price (USD)", fontsize=12)
+plt.xticks(fontsize=10)
+plt.yticks(fontsize=10)
+
+plt.gcf().autofmt_xdate() # rotate x labels so we can see the dates
+
+plt.savefig("stock_prices_over_time.png")
 plt.show()
+
+
+
+
+
+
+
+
+
 
 #print(type(df))
 

@@ -1,5 +1,31 @@
 # this is the "app/robo_advisor.py" file
 
+import requests
+import json
+
+#
+# PROGRAM INPUTS
+#
+
+request_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=IBM&apikey=demo"
+    # website > documentation > JSON first link
+
+response = requests.get(request_URL)
+#print(type(response)) #> <class 'requests.models.Response'>
+#print(response.status_code) #status code of the request #> 200
+#print(response.text) #actual text of the request #> bunch string version of dictionaries
+#    # need to parse this from strings into dictionary
+
+parsed_response = json.loads(response.text)
+print(type(parsed_response)) #> dict
+    #2 keys: "Meta Data" and "Time Series (Daily)"
+
+#breakpoint()
+
+
+#
+# OUTPUT REQUIREMENTS
+#
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")

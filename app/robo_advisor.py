@@ -2,6 +2,8 @@
 
 import requests
 import json
+import csv
+import os
 
 def to_usd(my_price):
     """
@@ -59,19 +61,33 @@ recent_low = min(low_prices)
 #
 # OUTPUT REQUIREMENTS
 #
+
+# printing stock information
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
 print("REQUEST AT: 2018-02-20 02:00pm") # USE DATE TIME MODULE
 print("-------------------------")
+
+# printing stock data
 print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
 print("LATEST CLOSE:", to_usd(float(latest_close)))
 print("RECENT HIGH:", to_usd(float(recent_high)))
 print("RECENT LOW:", to_usd(float(recent_low)))
 print("-------------------------")
+
+# design algorithm
 print("RECOMMENDATION: BUY!")
 print("RECOMMENDATION REASON: TODO")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
+
+
+csv_file_path = os.path.join(os.path.dirname(__file__),"..","data","prices.csv") # relative filepath
+
+with open(csv_file_path, "w") as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames=["city","name"])
+    writer.writeheader()
+    writer.writerow({"city":"New York","name":"Yanks"})

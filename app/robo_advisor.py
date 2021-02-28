@@ -4,10 +4,17 @@ import requests
 import json
 import csv
 import os
+
 from dotenv import load_dotenv
 load_dotenv()
+
 import datetime
 now = datetime.datetime.now()
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+
 
 def to_usd(my_price):
     """
@@ -110,8 +117,9 @@ print("-------------------------")
 
 # write data to csv
 csv_file_path = os.path.join(os.path.dirname(__file__),"..","data",ticker+" prices.csv") # relative filepath
+csv_headers = ["timestamp","open","high","low","close","volume"]
 with open(csv_file_path, "w") as csv_file:
-    writer = csv.DictWriter(csv_file, fieldnames=["timestamp","open","high","low","close","volume"])
+    writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
     writer.writeheader()
 
     # loop to write prices each date
@@ -131,3 +139,23 @@ print("-------------------------")
 # conclusion
 print("HAPPY INVESTING!")
 print("-------------------------")
+
+
+#
+# PLOTTING CHART
+# attribution: https://stackoverflow.com/questions/42372617/how-to-plot-csv-data-using-matplotlib-and-pandas-in-python
+
+df = pd.read_csv(csv_file_path)
+headers = ['Date', 'Close']
+#print(df)
+
+#df['Date'] = df['Date'].map(lambda x: datetime.strftime(str(x), '%Y/%m/%d %H:%M:%S.%f'))
+x = df['Date']
+y = df['Close']
+
+# plot
+plt.plot(x,y)
+# beautify the x-labels
+plt.gcf().autofmt_xdate()
+
+plt.show()

@@ -89,14 +89,15 @@ with open(csv_file_path, "w") as csv_file:
     writer.writeheader()
 
     # loop to write each row
-    writer.writerow({
-        "timestamp":"test",
-        "open":"test",
-        "high":"test",
-        "low":"test",
-        "close":"test",
-        "volume":"test"
-    })
+    for day in dates:
+        writer.writerow({
+            "timestamp":day,
+            "open":tsd[day]['1. open'],
+            "high":tsd[day]['2. high'],
+            "low":tsd[day]['3. low'],
+            "close":tsd[day]['4. close'],
+            "volume":tsd[day]['5. volume']
+        })
 
 print("Writing data to .csv file", csv_file_path)
 print("-------------------------")

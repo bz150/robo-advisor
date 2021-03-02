@@ -16,13 +16,14 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-import datetime
-now = datetime.datetime.now()
+import datetime as dt
+now = dt.datetime.now()
 
 import pandas as pd
 #import matplotlib.dates as mdates
 from pandas import DataFrame
 from matplotlib import pyplot as plt
+import matplotlib.dates as mdates
 import seaborn as sns
 import plotly.express as px
 
@@ -157,29 +158,28 @@ print("-------------------------")
 # attribution: https://stackoverflow.com/questions/42372617/how-to-plot-csv-data-using-matplotlib-and-pandas-in-python
 # attribution: https://colab.research.google.com/drive/1mSRkZSI_a0ASFSxOUzzLqFI21KDmH10w?usp=sharing
 
-df = pd.read_csv(csv_file_path)
+#df = pd.read_csv(csv_file_path)
 #headers = ['Date', 'Close']
 
-sns.lineplot(data = df, x="timestamp", y="close")
-
-#plt.legend()
-#plt.grid()
-
-plt.title(ticker+" Price", fontsize=18, y=1.05)
-plt.xlabel("Date", fontsize=12)
-plt.ylabel("Close Price (USD)", fontsize=12)
-plt.xticks(fontsize=10)
-plt.yticks(fontsize=10)
-
-plt.gcf().autofmt_xdate() # rotate x labels so we can see the dates
-
-plt.savefig("stock_prices_over_time.png")
-plt.show()
-
+#sns.lineplot(data = df, x="timestamp", y="close")
+#
+#plt.title(ticker+" Price", fontsize=18, y=1.05)
+#plt.xlabel("Date", fontsize=12)
+#plt.ylabel("Close Price (USD)", fontsize=12)
+#plt.xticks(fontsize=10)
+#plt.yticks(fontsize=10)
+#
+#dates = mdates.drange(dt.datetime(2020, 10, 7),dt.datetime(2021, 3, 2),dt.timedelta(weeks=3))
+#
+#plt.gcf().autofmt_xdate() # rotate x labels so we can see the dates
+#
+#plt.savefig("stock_prices_over_time.png")
+#plt.show()
 
 
-
-
+df = pd.read_csv(csv_file_path)
+fig = px.line(df, x="timestamp", y="close", title='stock price')
+fig.show()
 
 
 

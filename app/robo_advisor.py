@@ -12,6 +12,7 @@ import requests
 import json
 import csv
 import os
+import string
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,6 +38,10 @@ def to_usd(my_price):
     """
     return f"${my_price:,.2f}" #> $12,000.71
 
+def has_numbers(string):
+    return any(char.isdigit() for char in string)
+    # attribution: https://stackoverflow.com/questions/19859282/check-if-a-string-contains-a-number
+
 
 #
 # PROGRAM INPUTS
@@ -44,10 +49,25 @@ def to_usd(my_price):
 
 # customize URL to pull data
 API_KEY = os.environ.get("ALPHAVANTAGE_API_KEY")
-ticker = input("Please enter a stock ticker: ")
-ticker = ticker.upper()
+
+active = True
+while active == True:
+    ticker = input("Please enter a stock ticker: ")
+    ticker = ticker.upper()
+
+    if has_numbers(ticker) == True:
+        print("Uh oh, it looks like there are some numbers in your ticker. Please retry with a properly formed ticker.")
+        active = True
+    elif len(ticker) > 5:
+        print("Uh oh, it looks like your ticker is too long. Please retry with a properly formed ticker.")
+        active = True
+    else:
+        active = False
+
+
 request_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
     # website > documentation > JSON first link
+
 
 response = requests.get(request_URL)
 #print(type(response)) #> <class 'requests.models.Response'>
@@ -157,6 +177,13 @@ print("-------------------------")
 # PLOTTING CHART
 # attribution: https://stackoverflow.com/questions/42372617/how-to-plot-csv-data-using-matplotlib-and-pandas-in-python
 # attribution: https://colab.research.google.com/drive/1mSRkZSI_a0ASFSxOUzzLqFI21KDmH10w?usp=sharing
+# attribution: https://plotly.com/python/line-charts/
+
+df = pd.read_csv(csv_file_path)
+fig = px.line(df, x="timestamp", y="close", title=ticker+' Stock Price')
+fig.show()
+
+
 
 #df = pd.read_csv(csv_file_path)
 #headers = ['Date', 'Close']
@@ -177,9 +204,6 @@ print("-------------------------")
 #plt.show()
 
 
-df = pd.read_csv(csv_file_path)
-fig = px.line(df, x="timestamp", y="close", title='stock price')
-fig.show()
 
 
 

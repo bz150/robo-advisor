@@ -91,93 +91,92 @@ try:
     
     # latest day
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+
+    # latest close
+    tsd = parsed_response["Time Series (Daily)"] # time series daily, for convenience. keys are all the dates
+
+    # convert the tsd keys (bunch of dates) into a list to have most recent date
+    dates = list(tsd.keys()) # CAN SORT TO ENSURE LATEST DAY IS FIRST
+    latest_day = dates[0]
+    latest_close = tsd[latest_day]['4. close']
+
+    # recent high and low
+    # max of the high prices provided, min of the low prices provided
+    high_prices = []
+    low_prices = []
+    for i in dates:
+        high_prices.append((float(tsd[i]["2. high"])))
+        low_prices.append((float(tsd[i]["3. low"])))
+    recent_high = max(high_prices)
+    recent_low = min(low_prices)
+
+    # recommendation algorithm
+    latest_close = float(latest_close)
+    recent_high = float(recent_high)
+    recent_low = float(recent_low)
+    if latest_close > 1.2*(recent_low+recent_high)/2:
+        recommendation = "BUY!"
+        thesis = "Stock looks like it's trending up!"
+    elif latest_close < 0.8*(recent_low+recent_high)/2:
+        recommendation = "SELL!"
+        thesis = "Stock looks like it's headed down!"
+    else:
+        recommendation = "Wait/hold..."
+        thesis = "No conclusive evidence could be found to justify a buy or a sell."
+    #breakpoint()
+
+    #
+    # OUTPUT REQUIREMENTS
+    #
+
+    # printing stock information
+    print("-------------------------")
+    print("SELECTED SYMBOL:", ticker)
+    print("-------------------------")
+    print("REQUESTING STOCK MARKET DATA...")
+    print("REQUEST AT:", now.strftime("%y-%m-%d %H:%M:%S"))
+    print("-------------------------")
+
+    # printing stock data
+    print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
+    print("LATEST CLOSE:", to_usd(float(latest_close)))
+    print("RECENT HIGH:", to_usd(float(recent_high)))
+    print("RECENT LOW:", to_usd(float(recent_low)))
+    print("-------------------------")
+
+    # design algorithm
+    print("RECOMMENDATION:", recommendation)
+    print("RECOMMENDATION REASON:", thesis)
+    print("-------------------------")
+
+    # write data to csv
+    csv_file_path = os.path.join(os.path.dirname(__file__),"..","data",ticker+" prices.csv") # relative filepath
+    csv_headers = ["timestamp","open","high","low","close","volume"]
+    with open(csv_file_path, "w") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        writer.writeheader()
+
+        # loop to write prices each date
+        for day in dates:
+            writer.writerow({
+                "timestamp":day,
+                "open":tsd[day]['1. open'],
+                "high":tsd[day]['2. high'],
+                "low":tsd[day]['3. low'],
+                "close":tsd[day]['4. close'],
+                "volume":tsd[day]['5. volume']
+            })
+
+    print("Writing data to .csv file", csv_file_path)
+    print("-------------------------")
+
+    # conclusion
+    print("HAPPY INVESTING!")
+    print("-------------------------")
 except:
     print("Hm, it seems like we can't find that ticker.")
     exit()
 
-# latest close
-tsd = parsed_response["Time Series (Daily)"] # time series daily, for convenience. keys are all the dates
-
-# convert the tsd keys (bunch of dates) into a list to have most recent date
-dates = list(tsd.keys()) # CAN SORT TO ENSURE LATEST DAY IS FIRST
-latest_day = dates[0]
-latest_close = tsd[latest_day]['4. close']
-
-# recent high and low
-# max of the high prices provided, min of the low prices provided
-high_prices = []
-low_prices = []
-for i in dates:
-    high_prices.append((float(tsd[i]["2. high"])))
-    low_prices.append((float(tsd[i]["3. low"])))
-recent_high = max(high_prices)
-recent_low = min(low_prices)
-
-# recommendation algorithm
-latest_close = float(latest_close)
-recent_high = float(latest_close)
-recent_low = float(latest_close)
-if latest_close > 1.2*(recent_low+recent_high)/2:
-    recommendation = "BUY!"
-    thesis = "Stock looks like it's trending up!"
-elif latest_close < 0.8*(recent_low+recent_high)/2:
-    recommendation = "SELL!"
-    thesis = "Stock looks like it's headed down!"
-else:
-    recommendation = "Wait/hold..."
-    thesis = "No conclusive evidence could be found to justify a buy or a sell."
-
-
-#breakpoint()
-
-#
-# OUTPUT REQUIREMENTS
-#
-
-# printing stock information
-print("-------------------------")
-print("SELECTED SYMBOL:", ticker)
-print("-------------------------")
-print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT:", now.strftime("%y-%m-%d %H:%M:%S"))
-print("-------------------------")
-
-# printing stock data
-print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
-print("LATEST CLOSE:", to_usd(float(latest_close)))
-print("RECENT HIGH:", to_usd(float(recent_high)))
-print("RECENT LOW:", to_usd(float(recent_low)))
-print("-------------------------")
-
-# design algorithm
-print("RECOMMENDATION:", recommendation)
-print("RECOMMENDATION REASON:", thesis)
-print("-------------------------")
-
-# write data to csv
-csv_file_path = os.path.join(os.path.dirname(__file__),"..","data",ticker+" prices.csv") # relative filepath
-csv_headers = ["timestamp","open","high","low","close","volume"]
-with open(csv_file_path, "w") as csv_file:
-    writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-    writer.writeheader()
-
-    # loop to write prices each date
-    for day in dates:
-        writer.writerow({
-            "timestamp":day,
-            "open":tsd[day]['1. open'],
-            "high":tsd[day]['2. high'],
-            "low":tsd[day]['3. low'],
-            "close":tsd[day]['4. close'],
-            "volume":tsd[day]['5. volume']
-        })
-
-print("Writing data to .csv file", csv_file_path)
-print("-------------------------")
-
-# conclusion
-print("HAPPY INVESTING!")
-print("-------------------------")
 
 
 #

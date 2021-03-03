@@ -61,32 +61,39 @@ while active == True:
     elif len(ticker) > 5:
         print("Uh oh, it looks like your ticker is too long. Please retry with a properly formed ticker.")
         active = True
+    elif ticker.isalpha() == False:
+        print("Uh oh, it looks like your ticker has special characters. Please retry with a properly formed ticker.")
+        active = True
     else:
         active = False
 
+try:
 
-request_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
-    # website > documentation > JSON first link
-
-
-response = requests.get(request_URL)
-#print(type(response)) #> <class 'requests.models.Response'>
-#print(response.status_code) #status code of the request #> 200
-#print(response) #actual text of the request #> bunch string version of dictionaries
-#print(type(response)) #actual text of the request #> bunch string version of dictionaries
-#if "invalid API call" in response.text:
-#    print("ERROR")
-
-
-parsed_response = json.loads(response.text)
-#print(type(parsed_response)) #> dict
-    # 2 keys: "Meta Data" and "Time Series (Daily)"
-    # meta data is another dict
-#print(parsed_response["Meta Data"].keys()) #> ['1. Information', '2. Symbol', '3. Last Refreshed', '4. Output Size', '5. Time Zone']
-#print(parsed_response["Time Series (Daily)"].keys()) #> a bunch of dates; e.g. '2021-02-19'
-
-# latest day
-last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+    request_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
+        # website > documentation > JSON first link
+    
+    
+    response = requests.get(request_URL)
+    #print(type(response)) #> <class 'requests.models.Response'>
+    #print(response.status_code) #status code of the request #> 200
+    #print(response) #actual text of the request #> bunch string version of dictionaries
+    #print(type(response)) #actual text of the request #> bunch string version of dictionaries
+    #if "invalid API call" in response.text:
+    #    print("ERROR")
+    
+    
+    parsed_response = json.loads(response.text)
+    #print(type(parsed_response)) #> dict
+        # 2 keys: "Meta Data" and "Time Series (Daily)"
+        # meta data is another dict
+    #print(parsed_response["Meta Data"].keys()) #> ['1. Information', '2. Symbol', '3. Last Refreshed', '4. Output Size', '5. Time Zone']
+    #print(parsed_response["Time Series (Daily)"].keys()) #> a bunch of dates; e.g. '2021-02-19'
+    
+    # latest day
+    last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+except:
+    print("Hm, it seems like we can't find that ticker.")
+    exit()
 
 # latest close
 tsd = parsed_response["Time Series (Daily)"] # time series daily, for convenience. keys are all the dates

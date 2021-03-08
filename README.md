@@ -7,14 +7,14 @@ This project requires use of the [AlphaVantage Stock Market API](https://www.alp
 Note that I am not a registered financial advisor, please do your own research before making investment decisions. The following is merely for fun!
 
 ## Initial Setup
-Clone or download the [robo-advisor repo](https://github.com/bz150/robo-advisor)from GitHub. You may have to fork this first for your own usage.
+Clone or download the [robo-advisor repo](https://github.com/bz150/robo-advisor) from GitHub. You may have to fork this first for your own usage.
 
 To access, the program, you will first want to navigate to where it's saved through the command line. If on the desktop (recommended for simplicity), it would be `cd ~/desktop/robo-advisor`.
 
 Next, you'll want to set up a virtual environment, which will allow you to use the program's features. Type this into the command line:
 ```
 conda create -n stocks-env python=3.8
-conda activate shopping-env
+conda activate stocks-env
 pip install -r requirements.txt
 ```
 

@@ -63,9 +63,10 @@ try:
 
     request_URL = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={API_KEY}"
         # website > documentation > JSON first link
-    
+    request_URL_weekly = f"https://www.alphavantage.co/query?function=TIME_SERIES_WEEKLY&symbol={ticker}&apikey={API_KEY}"
     
     response = requests.get(request_URL)
+    response_2 = requests.get(request_URL_weekly)
     #print(type(response)) #> <class 'requests.models.Response'>
     #print(response.status_code) #status code of the request #> 200
     #print(response) #actual text of the request #> bunch string version of dictionaries
@@ -75,6 +76,7 @@ try:
     
     
     parsed_response = json.loads(response.text)
+    parsed_response_2 = json.loads(response_2.text)
     #print(type(parsed_response)) #> dict
         # 2 keys: "Meta Data" and "Time Series (Daily)"
         # meta data is another dict
@@ -86,19 +88,26 @@ try:
 
     # latest close
     tsd = parsed_response["Time Series (Daily)"] # time series daily, for convenience. keys are all the dates
-
+    tsw = parsed_response_2["Weekly Time Series"] # time series weekly, for 52-wk high/low calc. keys are all the dates
+    
     # convert the tsd keys (bunch of dates) into a list to have most recent date
     dates = list(tsd.keys()) # CAN SORT TO ENSURE LATEST DAY IS FIRST
     latest_day = dates[0]
     latest_close = tsd[latest_day]['4. close']
 
-    # recent high and low
+    # 52-wk high and low
     # max of the high prices provided, min of the low prices provided
+    weeks = list(tsw.keys())
+
+    fifty_two_weeks = []
+    for i in range (0,52):
+        fifty_two_weeks.append(weeks[i])    
+
     high_prices = []
     low_prices = []
-    for i in dates:
-        high_prices.append((float(tsd[i]["2. high"])))
-        low_prices.append((float(tsd[i]["3. low"])))
+    for i in fifty_two_weeks:
+        high_prices.append((float(tsw[i]["2. high"])))
+        low_prices.append((float(tsw[i]["3. low"])))
     recent_high = max(high_prices)
     recent_low = min(low_prices)
 
@@ -115,7 +124,6 @@ try:
     else:
         recommendation = "Wait/hold..."
         thesis = "No conclusive evidence could be found to justify a buy or a sell."
-    #breakpoint()
 
     #
     # OUTPUT REQUIREMENTS
@@ -132,8 +140,8 @@ try:
     # printing stock data
     print("LATEST DAY:", last_refreshed) # DOES NOT INCLUDE TIME ANYMORE
     print("LATEST CLOSE:", to_usd(float(latest_close)))
-    print("RECENT HIGH:", to_usd(float(recent_high)))
-    print("RECENT LOW:", to_usd(float(recent_low)))
+    print("52-WK HIGH:", to_usd(float(recent_high)))
+    print("52-WK LOW:", to_usd(float(recent_low)))
     print("-------------------------")
 
     # design algorithm
@@ -170,7 +178,6 @@ except:
     exit()
 
 
-
 #
 # PLOTTING CHART
 # attribution: https://stackoverflow.com/questions/42372617/how-to-plot-csv-data-using-matplotlib-and-pandas-in-python
@@ -183,45 +190,3 @@ fig.show()
 
 fig2 = px.bar(df, x="timestamp", y="volume", title=ticker+' Trading Volume')
 fig2.show()
-
-
-#df = pd.read_csv(csv_file_path)
-#headers = ['Date', 'Close']
-
-#sns.lineplot(data = df, x="timestamp", y="close")
-#
-#plt.title(ticker+" Price", fontsize=18, y=1.05)
-#plt.xlabel("Date", fontsize=12)
-#plt.ylabel("Close Price (USD)", fontsize=12)
-#plt.xticks(fontsize=10)
-#plt.yticks(fontsize=10)
-#
-#dates = mdates.drange(dt.datetime(2020, 10, 7),dt.datetime(2021, 3, 2),dt.timedelta(weeks=3))
-#
-#plt.gcf().autofmt_xdate() # rotate x labels so we can see the dates
-#
-#plt.savefig("stock_prices_over_time.png")
-#plt.show()
-
-
-
-
-
-
-
-#print(type(df))
-
-#line_df = DataFrame(df)
-#
-#x = df['Date']
-#y = df['Close']
-#sns.lineplot(data=line_df, x="date", y="close")
-
-
-# plot
-#df['Date'] = df['Date'].map(lambda x: datetime.strftime(str(x), '%Y/%m/%d %H:%M:%S.%f'))
-#plt.plot(x,y)
-# beautify the x-labels
-#plt.gcf().autofmt_xdate()
-#
-#plt.show()

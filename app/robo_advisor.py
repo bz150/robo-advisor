@@ -1,6 +1,5 @@
 # this is the "app/robo_advisor.py" file
 
-
 import requests
 import json
 import csv
@@ -14,10 +13,7 @@ import datetime as dt
 now = dt.datetime.now()
 
 import pandas as pd
-#import matplotlib.dates as mdates
 from pandas import DataFrame
-#from matplotlib import pyplot as plt
-#import matplotlib.dates as mdates
 import plotly.express as px
 
 
@@ -67,21 +63,9 @@ try:
     
     response = requests.get(request_URL)
     response_2 = requests.get(request_URL_weekly)
-    #print(type(response)) #> <class 'requests.models.Response'>
-    #print(response.status_code) #status code of the request #> 200
-    #print(response) #actual text of the request #> bunch string version of dictionaries
-    #print(type(response)) #actual text of the request #> bunch string version of dictionaries
-    #if "invalid API call" in response.text:
-    #    print("ERROR")
-    
     
     parsed_response = json.loads(response.text)
     parsed_response_2 = json.loads(response_2.text)
-    #print(type(parsed_response)) #> dict
-        # 2 keys: "Meta Data" and "Time Series (Daily)"
-        # meta data is another dict
-    #print(parsed_response["Meta Data"].keys()) #> ['1. Information', '2. Symbol', '3. Last Refreshed', '4. Output Size', '5. Time Zone']
-    #print(parsed_response["Time Series (Daily)"].keys()) #> a bunch of dates; e.g. '2021-02-19'
     
     # latest day
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
@@ -91,12 +75,12 @@ try:
     tsw = parsed_response_2["Weekly Time Series"] # time series weekly, for 52-wk high/low calc. keys are all the dates
     
     # convert the tsd keys (bunch of dates) into a list to have most recent date
-    dates = list(tsd.keys()) # CAN SORT TO ENSURE LATEST DAY IS FIRST
+    dates = list(tsd.keys())
     latest_day = dates[0]
     latest_close = tsd[latest_day]['4. close']
 
     # 52-wk high and low
-    # max of the high prices provided, min of the low prices provided
+    # max of the high prices and min of the low prices in the last 52 weeks
     weeks = list(tsw.keys())
 
     fifty_two_weeks = []
@@ -111,7 +95,11 @@ try:
     recent_high = max(high_prices)
     recent_low = min(low_prices)
 
-    # recommendation algorithm
+
+    #
+    # RECOMMENDATION ALGORITHM
+    #
+    
     latest_close = float(latest_close)
     recent_high = float(recent_high)
     recent_low = float(recent_low)
@@ -174,7 +162,7 @@ try:
     print("HAPPY INVESTING!")
     print("-------------------------")
 except:
-    print("Hm, it seems like we can't find that ticker.")
+    print("Hm, it seems like we can't find that ticker, sorry!")
     exit()
 
 
@@ -184,9 +172,11 @@ except:
 # attribution: https://colab.research.google.com/drive/1mSRkZSI_a0ASFSxOUzzLqFI21KDmH10w?usp=sharing
 # attribution: https://plotly.com/python/line-charts/
 
+# price (daily close) line graph
 df = pd.read_csv(csv_file_path)
 fig = px.line(df, x="timestamp", y="close", title=ticker+' Stock Price')
 fig.show()
 
+# volume bar graph
 fig2 = px.bar(df, x="timestamp", y="volume", title=ticker+' Trading Volume')
 fig2.show()

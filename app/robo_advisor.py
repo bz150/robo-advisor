@@ -1,12 +1,5 @@
 # this is the "app/robo_advisor.py" file
 
-# TO DO:
-# 1. pandas graph
-# 2. validate input ticker (no nonsense)
-# 3. if error on alphavantage request, prompt user re-enter
-# 4. check proj reqs
-
-
 
 import requests
 import json
@@ -23,9 +16,8 @@ now = dt.datetime.now()
 import pandas as pd
 #import matplotlib.dates as mdates
 from pandas import DataFrame
-from matplotlib import pyplot as plt
-import matplotlib.dates as mdates
-import seaborn as sns
+#from matplotlib import pyplot as plt
+#import matplotlib.dates as mdates
 import plotly.express as px
 
 
@@ -189,6 +181,8 @@ df = pd.read_csv(csv_file_path)
 fig = px.line(df, x="timestamp", y="close", title=ticker+' Stock Price')
 fig.show()
 
+fig2 = px.bar(df, x="timestamp", y="volume", title=ticker+' Trading Volume')
+fig2.show()
 
 
 #df = pd.read_csv(csv_file_path)

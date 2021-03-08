@@ -3,6 +3,5 @@
 requests
 python-dotenv
 pandas
-matplotlib
+#matplotlib
 plotly
-seaborn

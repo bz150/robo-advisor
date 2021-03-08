@@ -105,10 +105,10 @@ try:
     recent_low = float(recent_low)
     if latest_close > 1.2*(recent_low+recent_high)/2:
         recommendation = "BUY!"
-        thesis = "Stock looks like it's trending up!"
+        thesis = "Stock looks like it's trending up."
     elif latest_close < 0.8*(recent_low+recent_high)/2:
         recommendation = "SELL!"
-        thesis = "Stock looks like it's headed down!"
+        thesis = "Stock looks like it's headed down from here."
     else:
         recommendation = "Wait/hold..."
         thesis = "No conclusive evidence could be found to justify a buy or a sell."
